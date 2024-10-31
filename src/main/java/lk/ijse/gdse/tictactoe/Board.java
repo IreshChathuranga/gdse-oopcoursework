@@ -6,6 +6,6 @@ public interface Board {
     void updateMove(int row, int col, Piece piece);
     Piece checkWinner();
     boolean isFull();
-//    void printBoard();
+    void printBoard();
 //    void getBoardUI();
 }

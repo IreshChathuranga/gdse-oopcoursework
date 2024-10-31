@@ -1,5 +1,6 @@
 package lk.ijse.gdse.tictactoe.controller;
 
+import javafx.animation.PauseTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -8,6 +9,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
+import javafx.util.Duration;
 import lk.ijse.gdse.tictactoe.AiPlayer;
 import lk.ijse.gdse.tictactoe.BoardImpl;
 import lk.ijse.gdse.tictactoe.Piece;
@@ -74,18 +77,32 @@ public class BoardController {
         if (board.isLegalMove(row, col)) {
             // Human (X) move
             clickedButton.setText("X");
+            clickedButton.setTextFill(Color.LIGHTGREEN);
+            //clickedButton.setBlendMode(BlendMode.SCREEN);
             board.updateMove(row, col, Piece.X);
+            board.printBoard();
+//            updateButtonBorderColor(clickedButton, "X");
+//            updateButtonBorderColor(clickedButton, "0");
 
             // Check for a winner or tie after the human move
             if (checkGameState(Piece.X)) return;
 
-            // AI (O) move
-            aiPlayer.Move(row, col);  // AI calculates its move and updates the board
-            updateBoardUI();  // Update the buttons in the UI with AI's move
-
-            // Check for a winner or tie after the AI move
-            checkGameState(Piece.O);
+            // Pause for 2 seconds before AI move
+            PauseTransition pause = new PauseTransition(Duration.seconds(1));
+            pause.setOnFinished(e -> {
+                aiPlayerMove();
+            });
+            pause.play();
         }
+    }
+
+    private void aiPlayerMove() {
+        // AI calculates its move and updates the board
+        aiPlayer.Move(-1, -1);  // Pass -1, -1 to let AI choose the move
+        updateBoardUI();  // Update the buttons in the UI with AI's move
+        board.printBoard();
+        // Check for a winner or tie after the AI move
+        checkGameState(Piece.O);
     }
     @FXML
     private boolean checkGameState(Piece currentPlayerPiece) {
@@ -95,6 +112,7 @@ public class BoardController {
             return true;
         } else if (board.isFull()) {
             lblLable.setText("It's a tie!");
+            lblLable.setTextFill(Color.WHITE);
             return true;
         } else {
             lblLable.setText("Player " + (currentPlayerPiece == Piece.X ? "O" : "X") + "'s turn");
@@ -147,3 +165,38 @@ public class BoardController {
         }
     }
 }
+//@FXML
+//public void handleButtonClick(ActionEvent event) {
+//    Button clickedButton = (Button) event.getSource();
+//    int row = GridPane.getRowIndex(clickedButton);
+//    int col = GridPane.getColumnIndex(clickedButton);
+//
+//    if (board.isLegalMove(row, col)) {
+//        // Human (X) move
+//        clickedButton.setText("X");
+//        clickedButton.setTextFill(Color.LIGHTGREEN);
+//        //clickedButton.setBlendMode(BlendMode.SCREEN);
+//        board.updateMove(row, col, Piece.X);
+//        board.printBoard();
+////            updateButtonBorderColor(clickedButton, "X");
+////            updateButtonBorderColor(clickedButton, "0");
+//
+//        // Check for a winner or tie after the human move
+//        if (checkGameState(Piece.X)) return;
+//
+//        // Pause for 2 seconds before AI move
+//        PauseTransition pause = new PauseTransition(Duration.seconds(1));
+//        pause.setOnFinished(e -> {
+//            aiPlayerMove();
+//        });
+//        pause.play();
+//    }
+//}
+//private void aiPlayerMove() {
+//    // AI calculates its move and updates the board
+//    aiPlayer.Move(-1, -1);  // Pass -1, -1 to let AI choose the move
+//    updateBoardUI();  // Update the buttons in the UI with AI's move
+//    board.printBoard();
+//    // Check for a winner or tie after the AI move
+//    checkGameState(Piece.O);
+//}

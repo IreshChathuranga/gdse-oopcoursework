@@ -55,9 +55,23 @@ public class BoardImpl implements Board {
         }
         return true;
     }
+    @Override
+    public void printBoard() {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                System.out.print(board[i][j] + " ");
+            }
+            System.out.println();
+        }
+        System.out.println("========");
+    }
+
+
     public Piece getPiece(int row, int col) {
         return board[row][col];
     }
 
 }
+
+
 
